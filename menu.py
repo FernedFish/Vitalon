@@ -1,7 +1,10 @@
 class Menu:
+    @staticmethod
+    def show_main_menu() -> None:
+        print("\n=== Vitalon: Health Tracker ===")
+        print("[1] Log in\n[2] Sign up\n[0] Exit")
 
-    def show_mainmenu():
-        print("=== Vitalon: A Health Tracker ===")
-        print("[1] Log in")
-        print("[2] Sign up")
-        print("[1] Exit")
+    @staticmethod
+    def show_user_menu(username: str) -> None:
+        print(f"\n=== {username}'s Health Tracker ===")
+        print("[1] Log vital signs\n[2] View dashboard\n[3] View health history\n[0] Log out")
