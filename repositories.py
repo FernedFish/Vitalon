@@ -4,7 +4,7 @@ from pathlib import Path
 from models import HealthRecord, User
 
 USER_FIELDS = ["username", "barangay", "password"]
-RECORD_FIELDS = ["date_created", "username", "barangay", "temperature", "blood_pressure", "systolic", "diastolic", "heart_rate", "respiratory_rate", "oxygen_saturation", "weight_kg", "height_cm", "bmi", "blood_glucose", "symptoms", "status"]
+RECORD_FIELDS = ["date_created", "username", "barangay", "age", "sex", "is+pregannt", "chronic_conditions", "symptoms_severity" "temperature", "blood_pressure", "systolic", "diastolic", "heart_rate", "respiratory_rate", "oxygen_saturation", "weight_kg", "height_cm", "bmi", "blood_glucose", "symptoms", "status"]
 
 
 class UserRepository:

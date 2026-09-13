@@ -19,6 +19,11 @@ class HealthRecord:
     heart_rate: int
     respiratory_rate: int
     oxygen_saturation: int
+    age : int = 0
+    sex : str = "" 
+    is_pregnant : bool = False
+    chronic_conditions: str = ""
+    sypmtoms_severity: str = "None"
     weight_kg: float | None = None
     height_cm: float | None = None
     blood_glucose: float | None = None
