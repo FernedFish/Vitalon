@@ -49,8 +49,30 @@ class Vitalon:
 
     def _log_vitals(self) -> None:
         try:
+            # Demographics & Clinical Context
+            age = self._number("Age: ", int, 0, 130)
+            sex = input("Sex (Male/Female/Other): ").strip()
+            
+            is_pregnant = False
+            if sex.casefold() in ("female", "f"):
+                preg_input = input("Are you currently pregnant? (y/n): ").strip().casefold()
+                is_pregnant = preg_input in ("y", "yes")
+
+            chronic_conditions = input("Chronic conditions (e.g., Hypertension, Diabetes, or leave empty): ").strip()
+
+            print("Symptom severity options: [1] None  [2] Mild  [3] Moderate  [4] Severe")
+            severity_map = {"1": "None", "2": "Mild", "3": "Moderate", "4": "Severe"}
+            severity_choice = input("Select symptom severity (1-4, default 1): ").strip()
+            symptom_severity = severity_map.get(severity_choice, "None")
+
             record = HealthRecord(
-                username=self.current_user.username, barangay=self.current_user.barangay,
+                username=self.current_user.username,
+                barangay=self.current_user.barangay,
+                age=age,
+                sex=sex,
+                is_pregnant=is_pregnant,
+                chronic_conditions=chronic_conditions,
+                symptom_severity=symptom_severity,
                 temperature=self._number("Temperature (°C): ", float, 30, 45),
                 systolic=self._number("Systolic blood pressure: ", int, 50, 250),
                 diastolic=self._number("Diastolic blood pressure: ", int, 30, 150),
@@ -65,10 +87,12 @@ class Vitalon:
             record.status, alerts = VitalService.assess_vitals(record)
             self.record_repository.add(record)
             print(f"\nSaved. Status: {record.status}")
-            for alert in alerts: print(f"- {alert}")
+            for alert in alerts:
+                print(f"- {alert}")
             if record.status == "Urgent":
                 print("Seek emergency care now, especially if there are severe symptoms. This tracker is not a diagnosis.")
-        except ValueError as error: print(f"Reading was not saved: {error}")
+        except ValueError as error:
+            print(f"Reading was not saved: {error}")
 
     @staticmethod
     def _number(prompt: str, kind, minimum: float, maximum: float):
