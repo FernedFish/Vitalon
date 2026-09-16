@@ -9,7 +9,7 @@ class VitalService:
         alerts: list[str] = []
         urgent = False
 
-        severity = record.sypmtoms_severity.strip().capitalize()
+        severity = record.symptom_severity.strip().capitalize()
         if severity == "Severe":
             alerts.append("Severe symptoms reported: requires immediate medical attention.")
             urgent = True
@@ -65,4 +65,3 @@ class VitalService:
         if alerts:
             return "Needs attention", alerts
         return "Normal", ["All entered readings are within the tracker's usual ranges."]
-

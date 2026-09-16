@@ -67,8 +67,7 @@ class Vitalon:
 
             print("Symptom severity options: [1] None  [2] Mild  [3] Moderate  [4] Severe")
             severity_map = {"1": "None", "2": "Mild", "3": "Moderate", "4": "Severe"}
-            severity_choice = input("Select symptom severity (1-4, default 1): ").strip()
-            symptom_severity = severity_map.get(severity_choice, "None")
+            symptom_severity = self._choose_symptom_severity(severity_map)
 
             record = HealthRecord(
                 username=self.current_user.username,
@@ -101,17 +100,38 @@ class Vitalon:
 
     @staticmethod
     def _number(prompt: str, kind, minimum: float, maximum: float):
-        value = kind(input(prompt))
-        if not minimum <= value <= maximum: raise ValueError(f"Enter a value from {minimum} to {maximum}.")
-        return value
+        while True:
+            try:
+                value = kind(input(prompt).strip())
+                if not minimum <= value <= maximum:
+                    raise ValueError
+                return value
+            except ValueError:
+                print(f"Invalid input. Enter a number from {minimum} to {maximum}.")
 
     @staticmethod
     def _optional_number(prompt: str, kind, minimum: float, maximum: float):
-        text = input(prompt).strip()
-        if not text: return None
-        value = kind(text)
-        if not minimum <= value <= maximum: raise ValueError(f"Enter a value from {minimum} to {maximum}.")
-        return value
+        while True:
+            text = input(prompt).strip()
+            if not text:
+                return None
+            try:
+                value = kind(text)
+                if not minimum <= value <= maximum:
+                    raise ValueError
+                return value
+            except ValueError:
+                print(f"Invalid input. Enter a number from {minimum} to {maximum}, or press Enter to skip.")
+
+    @staticmethod
+    def _choose_symptom_severity(severity_map: dict[str, str]) -> str:
+        while True:
+            choice = input("Select symptom severity (1-4, default 1): ").strip()
+            if not choice:
+                return "None"
+            if choice in severity_map:
+                return severity_map[choice]
+            print("Invalid selection. Choose 1, 2, 3, or 4.")
 
     def _reset_password(self) -> None:
         try:
