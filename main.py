@@ -19,7 +19,9 @@ class Vitalon:
             choice = input("Choose an option: ").strip()
             if choice == "1": self._login()
             elif choice == "2": self._sign_up()
+            elif choice == "9": self.reser_password()
             elif choice == "0":
+                
                 print("Take care. Goodbye!"); return
             else: print("Please choose a listed option.")
 
@@ -44,6 +46,9 @@ class Vitalon:
             if choice == "1": self._log_vitals()
             elif choice == "2": print_dashboard(self.record_repository.get_by_username(self.current_user.username))
             elif choice == "3": print_history(self.record_repository.get_by_username(self.current_user.username))
+            elif choice == "9":
+                if self.delete_account():
+                    self.current_user = None
             elif choice == "0": self.current_user = None
             else: print("Please choose a listed option.")
 
@@ -107,6 +112,36 @@ class Vitalon:
         value = kind(text)
         if not minimum <= value <= maximum: raise ValueError(f"Enter a value from {minimum} to {maximum}.")
         return value
+
+    def _reset_password(self) -> None:
+        try:
+            self.auth_service.reset_password(
+                input("Username: "),
+                input("Verify Barangay: "),
+                input("New Password (8+ characters): ")
+            )
+            print("Password reset successfully. You can now log in.")
+        except ValueError as error: 
+            print(f"Reset failed: {error}")
+
+    def _delete_account(self) -> bool:
+        print("\nWARNING: This will permanently delete your account and all health records.")
+        confirm = input("Type 'DELETE' to confirm: ")
+        if confirm != "DELETE":
+            print("Account deletion cancelled.")
+            return False
+            
+        try:
+            self.auth_service.delete_account(
+                self.current_user.username, 
+                input("Enter password to verify: ")
+            )
+            self.record_repository.delete_by_username(self.current_user.username)
+            print("Account and all associated records deleted.")
+            return True
+        except ValueError as error:
+            print(f"Deletion failed: {error}")
+            return False
 
 
 if __name__ == "__main__":
