@@ -38,3 +38,23 @@ class AuthService:
         _, salt, expected = stored.split("$", 2)
         actual = hashlib.pbkdf2_hmac("sha256", password.encode(), salt.encode(), 310_000).hex()
         return hmac.compare_digest(actual, expected)
+
+    def reset_password(self, username: str, barangay: str, new_password: str) -> bool:
+        user = self.user_repository.find_user(username.strip())
+        if not user or user.barangay.casefold() != barangay.strip().casefold():
+            raise ValueError("Verification failed. Username or barangay is incorrect.")
+            
+        if len(new_password) < 8:
+            raise ValueError("Password must contain at least 8 characters.")
+            
+        user.password = self._hash_password(new_password)
+        self.user_repository.update_user(user)
+        return True
+
+    def delete_account(self, username: str, password: str) -> bool:
+        user = self.login(username, password)
+        if not user:
+            raise ValueError("Invalid password.")
+            
+        self.user_repository.delete_user(username)
+        return True

@@ -25,6 +25,35 @@ class UserRepository:
                     return User(row["username"], row["barangay"], row["password"])
         return None
 
+    def update_user(self, updated_user: User) -> None:
+        if not self.filename.exists():
+            return
+        
+        with self.filename.open(newline="", encoding="utf-8") as file:
+            users = list(csv.DictReader(file))
+            
+        for row in users:
+            if row["username"].casefold() == updated_user.username.casefold():
+                row["password"] = updated_user.password
+                break
+                
+        with self.filename.open("w", newline="", encoding="utf-8") as file:
+            writer = csv.DictWriter(file, fieldnames=USER_FIELDS)
+            writer.writeheader()
+            writer.writerows(users)
+
+    def delete_user(self, username: str) -> None:
+        if not self.filename.exists():
+            return
+            
+        with self.filename.open(newline="", encoding="utf-8") as file:
+            users = [row for row in csv.DictReader(file) if row["username"].casefold() != username.casefold()]
+            
+        with self.filename.open("w", newline="", encoding="utf-8") as file:
+            writer = csv.DictWriter(file, fieldnames=USER_FIELDS)
+            writer.writeheader()
+            writer.writerows(users)
+
     def _ensure_file(self) -> None:
         if not self.filename.exists() or self.filename.stat().st_size == 0:
             with self.filename.open("w", newline="", encoding="utf-8") as file:
@@ -51,3 +80,15 @@ class RecordRepository:
         if not self.filename.exists() or self.filename.stat().st_size == 0:
             with self.filename.open("w", newline="", encoding="utf-8") as file:
                 csv.DictWriter(file, fieldnames=RECORD_FIELDS).writeheader()
+
+    def delete_by_username(self, username: str) -> None:
+        if not self.filename.exists():
+            return
+            
+        with self.filename.open(newline="", encoding="utf-8") as file:
+            records = [row for row in csv.DictReader(file) if row["username"].casefold() != username.casefold()]
+            
+        with self.filename.open("w", newline="", encoding="utf-8") as file:
+            writer = csv.DictWriter(file, fieldnames=RECORD_FIELDS)
+            writer.writeheader()
+            writer.writerows(records)
