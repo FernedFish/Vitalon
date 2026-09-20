@@ -5,3 +5,6 @@ __pycache__/
 #csv files for storing user info
 users.csv
 records.csv
+
+#pycharm
+.idea/
