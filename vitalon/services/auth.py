@@ -2,7 +2,7 @@ import hashlib
 import hmac
 import os
 
-from models import User
+from ..models import User
 
 
 class AuthService:

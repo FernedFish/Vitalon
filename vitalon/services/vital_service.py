@@ -1,4 +1,4 @@
-from models import HealthRecord
+from ..models import HealthRecord
 
 
 class VitalService:

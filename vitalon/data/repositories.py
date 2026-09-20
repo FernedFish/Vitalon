@@ -1,7 +1,7 @@
 import csv
 from pathlib import Path
 
-from models import HealthRecord, User
+from ..models import HealthRecord, User
 
 USER_FIELDS = ["username", "barangay", "password"]
 RECORD_FIELDS = [

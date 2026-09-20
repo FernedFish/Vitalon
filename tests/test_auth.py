@@ -8,8 +8,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from auth import AuthService
-from repositories import UserRepository
+from vitalon.data.repositories import UserRepository
+from vitalon.services.auth import AuthService
 
 
 class AuthServiceTests(unittest.TestCase):
