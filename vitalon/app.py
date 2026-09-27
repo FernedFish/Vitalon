@@ -85,7 +85,6 @@ class Vitalon:
                 oxygen_saturation=self._number("Oxygen saturation (%): ", int, 50, 100),
                 weight_kg=self._optional_number("Weight (kg, optional): ", float, 1, 500),
                 height_cm=self._optional_number("Height (cm, optional): ", float, 30, 300),
-                bmi=HealthRecord.bmi,
                 blood_glucose=self._optional_number("Blood glucose (mg/dL, optional): ", float, 10, 1000),
                 symptoms=input("Symptoms or notes (optional): ").strip(),
             )
