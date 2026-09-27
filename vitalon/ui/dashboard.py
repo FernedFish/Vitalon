@@ -20,7 +20,7 @@ def print_history(records: list[dict[str, str]]) -> None:
         return
     print("\n=== Recent Health History ===")
     for row in records[:10]:
-        print(f"{row['date_created']} | {row['status']:<15} | {row['temperature']} °C | BP {row['blood_pressure']} | HR {row['heart_rate']} | O₂ {row['oxygen_saturation']}%")
+        print(f"{row['date_created']} | {row['status']:<15} | {row['temperature']} °C | BP {row['blood_pressure']} | HR {row['heart_rate']} | O₂ {row['oxygen_saturation']}% | BMI {row['bmi']}")
 
 
 def _print_trends(records: list[dict[str, str]]) -> None:
