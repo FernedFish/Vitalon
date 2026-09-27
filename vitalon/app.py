@@ -19,7 +19,7 @@ class Vitalon:
             choice = input("Choose an option: ").strip()
             if choice == "1": self._login()
             elif choice == "2": self._sign_up()
-            elif choice == "9": self.reser_password()
+            elif choice == "9": self._reset_password()
             elif choice == "0":
                 
                 print("Take care. Goodbye!"); return
@@ -47,7 +47,7 @@ class Vitalon:
             elif choice == "2": print_dashboard(self.record_repository.get_by_username(self.current_user.username))
             elif choice == "3": print_history(self.record_repository.get_by_username(self.current_user.username))
             elif choice == "9":
-                if self.delete_account():
+                if self._delete_account():
                     self.current_user = None
             elif choice == "0": self.current_user = None
             else: print("Please choose a listed option.")
@@ -85,6 +85,7 @@ class Vitalon:
                 oxygen_saturation=self._number("Oxygen saturation (%): ", int, 50, 100),
                 weight_kg=self._optional_number("Weight (kg, optional): ", float, 1, 500),
                 height_cm=self._optional_number("Height (cm, optional): ", float, 30, 300),
+                bmi=HealthRecord.bmi,
                 blood_glucose=self._optional_number("Blood glucose (mg/dL, optional): ", float, 10, 1000),
                 symptoms=input("Symptoms or notes (optional): ").strip(),
             )
