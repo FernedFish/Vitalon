@@ -60,6 +60,26 @@ class VitalService:
         if record.age >= 65 and alerts:
             alerts.append("Higher vulnerability risk due to age (65+).")
 
+        # --- BMI Check ---
+        # For children upto teens
+        if record.age >= 2 or record.age <= 20:
+            if record.bmi < 5:
+                alerts.append("Underweight")
+            elif record.bmi > 85 or record.bmi < 95:
+                alerts.append("At tisk of being overweight")
+            elif record.bmi > 95:
+                alerts.append("Overweight")
+        # For adults
+        if record.age > 20:
+            if record.bmi < 16:
+                alerts.append("Severe Thinness")
+            elif record.bmi >= 16 or record.bmi <= 17:
+                alerts.append("Moderate Thinness")
+            elif record.bmi > 17 or record.bmi <= 18.5:
+                alerts.append("Mild Thinness")
+            elif record.bmi > 25:
+                alerts.append("Overweight")
+
         if urgent:
             return "Urgent", alerts
         if alerts:
