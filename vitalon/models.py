@@ -26,6 +26,7 @@ class HealthRecord:
     symptom_severity: str = "None"
     weight_kg: float | None = None
     height_cm: float | None = None
+    bmi: float = weight_kg/(height_cm * 100)
     blood_glucose: float | None = None
     symptoms: str = ""
     date_created: str = field(default_factory=lambda: date.today().isoformat())
