@@ -66,7 +66,7 @@ class VitalService:
             if record.bmi < 5:
                 alerts.append("Underweight")
             elif record.bmi > 85 or record.bmi < 95:
-                alerts.append("At tisk of being overweight")
+                alerts.append("At risk of being overweight")
             elif record.bmi > 95:
                 alerts.append("Overweight")
         # For adults
