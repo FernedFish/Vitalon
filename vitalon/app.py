@@ -2,8 +2,9 @@ from .data.repositories import RecordRepository, UserRepository
 from .models import HealthRecord
 from .services.auth import AuthService
 from .services.vital_service import VitalService
-from .ui.dashboard import print_dashboard, print_history
+from .ui.dashboard import print_dashboard, print_history, print_record_details, print_search_results
 from .ui.menu import Menu
+from datetime import date
 
 
 class Vitalon:
@@ -46,6 +47,7 @@ class Vitalon:
             if choice == "1": self._log_vitals()
             elif choice == "2": print_dashboard(self.record_repository.get_by_username(self.current_user.username))
             elif choice == "3": print_history(self.record_repository.get_by_username(self.current_user.username))
+            elif choice == "4": self._search_history()
             elif choice == "9":
                 if self._delete_account():
                     self.current_user = None
@@ -89,7 +91,7 @@ class Vitalon:
                 symptoms=input("Symptoms or notes (optional): ").strip(),
             )
             record.status, alerts = VitalService.assess_vitals(record)
-            self.record_repository.add(record)
+            self.record_repository.add(record, alerts)
             print(f"\nSaved. Status: {record.status}")
             for alert in alerts:
                 print(f"- {alert}")
@@ -97,6 +99,67 @@ class Vitalon:
                 print("Seek emergency care now, especially if there are severe symptoms. This tracker is not a diagnosis.")
         except ValueError as error:
             print(f"Reading was not saved: {error}")
+
+    def _search_history(self) -> None:
+        """Collect optional filters, show matching records, and open one in detail."""
+        valid_statuses = {"normal": "Normal", "needs attention": "Needs attention", "urgent": "Urgent"}
+        vital_types = {
+            "temperature": "temperature",
+            "blood pressure": "blood_pressure",
+            "heart rate": "heart_rate",
+            "oxygen": "oxygen_saturation",
+            "respiratory rate": "respiratory_rate",
+            "bmi": "bmi",
+            "glucose": "blood_glucose",
+        }
+
+        while True:
+            try:
+                start_text = input("Start date (YYYY-MM-DD, optional): ").strip()
+                end_text = input("End date (YYYY-MM-DD, optional): ").strip()
+                start_date = date.fromisoformat(start_text) if start_text else None
+                end_date = date.fromisoformat(end_text) if end_text else None
+            except ValueError:
+                print("Use the YYYY-MM-DD date format.")
+                continue
+
+            if start_date and end_date and end_date < start_date:
+                print("The end date cannot be earlier than the start date.")
+                continue
+
+            status_text = input("Status (All / Normal / Needs attention / Urgent): ").strip().casefold()
+            if status_text and status_text != "all" and status_text not in valid_statuses:
+                print("Choose All, Normal, Needs attention, or Urgent.")
+                continue
+
+            vital_text = input(
+                "Vital (All / Temperature / Blood pressure / Heart rate / Oxygen / Respiratory rate / BMI / Glucose): "
+            ).strip().casefold()
+            if vital_text and vital_text != "all" and vital_text not in vital_types:
+                print("Choose a listed vital type, or All.")
+                continue
+
+            records = self.record_repository.search_by_username(
+                self.current_user.username,
+                start_date=start_date,
+                end_date=end_date,
+                status=valid_statuses.get(status_text),
+                vital_type=vital_types.get(vital_text),
+            )
+            print_search_results(records, vital_types.get(vital_text))
+
+            if not records:
+                return
+
+            choice = input("Enter a record number for full details, or press Enter to return: ").strip()
+            if not choice:
+                return
+            try:
+                print_record_details(records[int(choice) - 1])
+                return
+            except (ValueError, IndexError):
+                print("Choose one of the displayed record numbers.")
+
 
     @staticmethod
     def _number(prompt: str, kind, minimum: float, maximum: float):
