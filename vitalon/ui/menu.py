@@ -7,4 +7,9 @@ class Menu:
     @staticmethod
     def show_user_menu(username: str) -> None:
         print(f"\n=== {username}'s Health Tracker ===")
-        print("[1] Log vital signs\n[2] View dashboard\n[3] View health history\n[9] Delete account\n[0] Log out")
+        print("[1] Log vital signs\n"
+              "[2] View dashboard\n"
+              "[3] View health history\n"
+              "[4] Search health history\n"
+              "[9] Delete account\n"
+              "[0] Log out")
